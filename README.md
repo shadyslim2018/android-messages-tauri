@@ -122,4 +122,4 @@ android-messages-tauri/
 
 ## License
 
-MIT — see `LICENSE` (or choose a license of your preference).
+MIT — see `LICENSE`
