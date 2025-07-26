@@ -1,0 +1,10 @@
+[package]
+name = "android-messages-tauri"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+tauri = { version = "2.7.0", features = [] }
+
+[build-dependencies]
+tauri-build = { version = "2.3.1", features = [] }

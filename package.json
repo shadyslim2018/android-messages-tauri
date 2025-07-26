@@ -1,0 +1,14 @@
+{
+  "name": "android-messages-tauri",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Android Messages Desktop (Tauri v2 minimal wrapper)",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.7.1"
+  }
+}
