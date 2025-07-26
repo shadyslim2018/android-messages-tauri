@@ -12,12 +12,12 @@ source=("git+https://github.com/shadyslim2018/android-messages-tauri.git")
 sha256sums=('SKIP')
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver/src-tauri"
+  cd "$srcdir/$pkgname/src-tauri"
   cargo build --release --locked
 }
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver/src-tauri"
+  cd "$srcdir/$pkgname/src-tauri"
   install -Dm755 "target/release/android-messages-tauri" \
     "$pkgdir/usr/bin/android-messages-tauri"
 
