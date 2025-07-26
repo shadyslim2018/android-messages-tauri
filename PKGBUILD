@@ -8,7 +8,7 @@ url="https://github.com/shadyslim2018/android-messages-tauri"
 license=('MIT')
 depends=('webkit2gtk' 'gtk3')
 makedepends=('cargo' 'npm' 'nodejs' 'clang' 'mold')
-source=("$pkgname-$pkgver.tar.gz")
+source=("git+https://github.com/shadyslim2018/android-messages-tauri.git")
 sha256sums=('SKIP')
 
 build() {
