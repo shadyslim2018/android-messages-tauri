@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Android Messages Tauri
+Exec=android-messages-tauri
+Icon=android-messages-tauri
+Terminal=false
+Categories=Utility;
+Comment=Unofficial desktop wrapper for Google Messages (messages.google.com/web)
