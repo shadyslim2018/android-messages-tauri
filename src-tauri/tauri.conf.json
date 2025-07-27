@@ -1,18 +1,14 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "identifier": "com.ak.androidmessagesdesktop",
-  "productName": "AndroidMessagesDesktop",
+  "productName": "AndroidMessagesTauri",
   "version": "1.0.0",
-
-  "build": {
-    "frontendDist": "../public"
-  },
-
+  "build": { "frontendDist": "../public" },
   "bundle": {
     "active": true,
     "targets": ["appimage", "deb", "rpm"],
+    "resources": ["icons"],
     "icon": [
-      "icons/icon.png",
       "icons/512x512.png",
       "icons/256x256.png",
       "icons/128x128.png",

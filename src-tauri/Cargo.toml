@@ -4,7 +4,8 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-tauri = { version = "2.7.0", features = [] }
+tauri = { version = "2", features = ["tray-icon", "image-png", "image-ico"] }
+
 
 [build-dependencies]
 tauri-build = { version = "2.3.1", features = [] }
