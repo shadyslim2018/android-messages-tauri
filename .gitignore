@@ -1,0 +1,28 @@
+cat > .gitignore <<'EOF'
+# Rust / Tauri
+/target
+**/target
+src-tauri/target
+*.rlib
+*.rmeta
+
+# Node / frontend
+/node_modules
+**/node_modules
+dist
+build
+
+# Tauri bundles & packages
+*.AppImage
+*.deb
+*.rpm
+*.dmg
+*.msi
+*.exe
+*.zip
+*.tar.gz
+*.pkg.tar.zst
+
+# Logs & misc
+*.log
+EOF
