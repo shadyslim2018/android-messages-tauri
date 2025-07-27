@@ -1,125 +1,153 @@
-# Android Messages Tauri
+# Android Messages (Unofficial) — Tauri Desktop Wrapper
 
-**Unofficial, privacy-friendly Tauri-based desktop client for [Google Messages for Web](https://messages.google.com/web).**
+A lightweight desktop wrapper for **Google Messages for Web**, built with **Tauri v2**.  
+Runs as a native window with a **system tray** (Show/Hide toggle) and **close‑to‑tray** behavior.
 
-> ⚠️ This project is not affiliated with Google.
-
----
-
-## Features
-
-- Native desktop app for Google Messages (Tauri + WebKitGTK)
-- Lightweight (Rust backend, no Electron/Chromium bundle)
-- No telemetry or background daemons
-- Secure, minimal permissions
+> **Status:** Linux (X11/Wayland) focused. Built and tested on Arch/Manjaro.
 
 ---
 
-## Installation
+## ✨ Features
 
-### Arch Linux / Manjaro (Recommended)
+- **Tray icon** with **Show/Hide** menu item
+- **Left‑click tray** to toggle visibility
+- **Close-to-tray** (window hides instead of quitting)
+- Remembers app state during the session
+- Minimal resource usage thanks to Tauri + WebKitGTK
 
-Build and install via `makepkg` directly from this repo.
+> Tip: If you prefer starting minimized to tray, this can be added; open an issue or PR.
+
+---
+
+## 🧩 Runtime Dependencies (Linux)
+
+You need WebKitGTK and an AppIndicator implementation for the tray:
+
+- `webkit2gtk-4.1`
+- `libayatana-appindicator`
+- `librsvg` (recommended for icon handling)
+
+**Arch/Manjaro**
+```bash
+sudo pacman -S --needed webkit2gtk-4.1 libayatana-appindicator librsvg
+```
+
+---
+
+## 🚀 Install / Build
+
+### Option A: Build from **PKGBUILD** (Arch/Manjaro)
+
+This repo contains a `-git` PKGBUILD that builds from the latest `main`:
 
 ```bash
-# 1) Install build deps (if needed)
-sudo pacman -S --needed base-devel git rustup nodejs npm clang mold webkit2gtk gtk3
-
-# 2) Clone and build
+sudo pacman -S --needed base-devel webkit2gtk-4.1 libayatana-appindicator librsvg
 git clone https://github.com/shadyslim2018/android-messages-tauri.git
-cd android-messages-tauri
+cd android-messages-tauri/packaging/arch/android-messages-tauri-git
 makepkg -si
 ```
 
-> The `PKGBUILD` will compile the Tauri binary and install the desktop entry and icons system‑wide.
+This installs:
+- Binary: `/usr/bin/android-messages-tauri`
+- Desktop entry: `/usr/share/applications/android-messages-tauri.desktop`
+- Icons in `hicolor` theme at multiple sizes
 
-#### Update later
-```bash
-cd android-messages-tauri
-git pull
-makepkg -si
-```
+### Option B: Build from source (any Linux)
 
----
+Requirements:
+- Rust (stable) and Cargo
+- System deps listed above
 
-### Other Linux (Manual Build)
-
-**Prerequisites**
-
-- Rust (via `rustup`), e.g.:
-  ```bash
-  sudo pacman -S --needed rustup && rustup default stable
-  ```
-- Node.js & npm (only if you modify the frontend)
-- System libs: `webkit2gtk` `gtk3` and friends
-- (Optional, faster linking) `clang` and `mold`
-
-**Steps**
-
+Build & run:
 ```bash
 git clone https://github.com/shadyslim2018/android-messages-tauri.git
 cd android-messages-tauri/src-tauri
-
-# Optional: faster link and ld relax workaround (seen on some systems)
-env RUSTFLAGS="-C link-arg=-fuse-ld=mold -C link-arg=-Wl,--no-relax" \
-  CC=clang CXX=clang++ \
-  cargo build --release
-
-# Run the app binary
-./target/release/android-messages-tauri
+cargo run --release
 ```
 
-> If you prefer debug hot‑reload during development:
-> ```bash
-> cd android-messages-tauri/src-tauri
-> cargo tauri dev
-> ```
+### Option C: Create distribution bundles (AppImage, deb, rpm)
 
----
-
-## Desktop Integration
-
-A `.desktop` file and icons are provided and installed by the PKGBUILD:
-- Desktop entry: `AndroidMessagesTauri.desktop`
-- Icons placed in `hicolor` under: `/usr/share/icons/hicolor/<size>/apps/android-messages-tauri.png`
-
-If building manually, you can copy these from `src-tauri/` to system locations or run the app directly from the build folder.
-
----
-
-## Troubleshooting
-
-- **Linker / ld errors** (e.g., GOTPCREL/relax issues): try building with `mold` and `clang` as shown above and add `-Wl,--no-relax`.
-- **Missing GTK/WebKit2**: install `webkit2gtk` and `gtk3` via your distro package manager.
-- **AppImage bundling**: prefer distro packages/PKGBUILD on Arch. AppImage creation can be flaky across systems.
-- **Slow first build**: Rust will compile many crates (GTK/WebKit bindings). Subsequent builds are fast.
-
----
-
-## Project Layout
-
+```bash
+cd android-messages-tauri/src-tauri
+cargo install tauri-cli --locked || true
+tauri build
 ```
-android-messages-tauri/
-├─ public/                     # minimal static frontend
-├─ src-tauri/                  # Tauri (Rust) project
-│  ├─ src/main.rs              # main window + URL
-│  ├─ icons/*.png              # app icons (32–512)
-│  ├─ AndroidMessagesTauri.desktop
-│  └─ tauri.conf.json
-└─ PKGBUILD                    # Arch/Manjaro packaging script
+Artifacts will be in `src-tauri/target/release/bundle/`.
+
+---
+
+## 🧭 App Behavior
+
+- **Tray:** Right‑click shows a menu with **Show/Hide** and **Quit**.
+- **Left‑click tray:** Toggles the window.
+- **Close button:** Hides the window to the tray instead of quitting.
+- The tray menu label stays in sync with the window visibility.
+
+If the window doesn’t raise/focus on your desktop environment, please open an issue with your DE/WM details (KDE Plasma, GNOME, Wayland/X11).
+
+---
+
+## 🐛 Troubleshooting
+
+- **Tray menu says “Hide Window”, but window is hidden**  
+  Click **Show Window** once or left‑click the tray icon. If it persists, file an issue with logs from `tauri dev`.
+
+- **Wayland/KDE focus issues**  
+  We call `show → unminimize → set_focus`. If your WM still refuses focus, report details so we can add a raise workaround.
+
+- **libayatana warning in terminal**  
+  This is a deprecation notice from the library; functionality is unaffected.
+
+---
+
+## 🛠 Development
+
+```bash
+# Optional: frontend build step if/when a bundled UI is added
+# npm ci && npm run build
+
+# Rust development
+cd src-tauri
+cargo run
+```
+
+Speed up linking (optional):
+```bash
+export CC=clang CXX=clang++
+export RUSTFLAGS="${RUSTFLAGS} -C link-arg=-fuse-ld=mold"
 ```
 
 ---
 
-## Why Tauri (vs. Electron)?
+## 📦 Packaging Notes (Arch)
 
-- Uses system WebKitGTK (smaller footprint)
-- Rust backend (better memory/perf characteristics)
-- Lower disk usage & RAM at runtime
-- Native packaging targets per-OS
+The VCS PKGBUILD lives at:
+```
+packaging/arch/android-messages-tauri-git/PKGBUILD
+```
+
+When you change packaging, bump `pkgrel` and commit the file.  
+For publishing to AUR later, generate `.SRCINFO` with:
+```bash
+makepkg --printsrcinfo > .SRCINFO
+```
 
 ---
 
-## License
+## 🔒 Privacy
 
-MIT — see `LICENSE`
+This app simply embeds Google’s official Messages web UI.  
+No extra tracking or analytics are added by this project.
+
+---
+
+## 📄 License
+
+MIT — see `LICENSE` if present, or the license header in source files.
+
+---
+
+## 🤝 Contributing
+
+- Issues and PRs are welcome.
+- If proposing tray/behavior changes, please include DE/WM + Wayland/X11 details.
